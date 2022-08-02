@@ -10,6 +10,9 @@
 	if (get_option('argon_page_layout') == "double-reverse"){
 		$htmlclasses .= "double-column-reverse ";
 	}
+	if (get_option('argon_enable_immersion_color') == "true"){
+		$htmlclasses .= "immersion-color ";
+	}
 	if (get_option('argon_enable_amoled_dark') == "true"){
 		$htmlclasses .= "amoled-dark ";
 	}
@@ -31,6 +34,8 @@
 			$htmlclasses .= 'banner-mini ';
 		}else if ($banner_size == 'hide'){
 			$htmlclasses .= 'no-banner ';
+		}else if ($banner_size == 'fullscreen'){
+			$htmlclasses .= 'banner-as-cover ';
 		}
 	}
 	if (get_option('argon_toolbar_blur', 'false') == 'true'){
@@ -43,10 +48,7 @@
 ?>
 <html <?php language_attributes(); ?> class="no-js <?php echo $htmlclasses;?>">
 <?php
-	$themecolor = get_option('argon_theme_color');
-	if ($themecolor == ""){
-		$themecolor = "#5e72e4";
-	}
+	$themecolor = get_option("argon_theme_color", "#5e72e4");
 	$themecolor_origin = $themecolor;
 	if (isset($_COOKIE["argon_custom_theme_color"])){
 		if (checkHEX($_COOKIE["argon_custom_theme_color"]) && get_option('argon_show_customize_theme_color_picker') != 'false'){
@@ -74,6 +76,7 @@
 	<?php }else{ ?>
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
 	<?php } ?>
+	<meta property="og:site_name" content="<?php echo get_bloginfo('name');?>">
 	<meta property="og:title" content="<?php echo wp_get_document_title();?>">
 	<meta property="og:type" content="article">
 	<meta property="og:url" content="<?php echo home_url(add_query_arg(array(),$wp->request));?>">
@@ -123,6 +126,7 @@
 	<?php wp_head(); ?>
 	<?php $GLOBALS['wp_path'] = get_option('argon_wp_path') == '' ? '/' : get_option('argon_wp_path'); ?>
 	<script>
+		document.documentElement.classList.remove("no-js");
 		var argonConfig = {
 			wp_path: "<?php echo $GLOBALS['wp_path']; ?>",
 			language: "<?php echo argon_get_locate(); ?>",
@@ -146,6 +150,7 @@
 				lazyload: false,
 			<?php } ?>
 			fold_long_comments: <?php echo get_option('argon_fold_long_comments', 'false'); ?>,
+			fold_long_shuoshuo: <?php echo get_option('argon_fold_long_shuoshuo', 'false'); ?>,
 			disable_pjax: <?php echo get_option('argon_pjax_disabled', 'false'); ?>,
 			pjax_animation_durtion: <?php echo (get_option("argon_disable_pjax_animation") == 'true' ? '0' : '600'); ?>,
 			headroom: "<?php echo get_option('argon_enable_headroom', 'false'); ?>",
@@ -153,6 +158,7 @@
 			code_highlight: {
 				enable: <?php echo get_option('argon_enable_code_highlight', 'false'); ?>,
 				hide_linenumber: <?php echo get_option('argon_code_highlight_hide_linenumber', 'false'); ?>,
+				transparent_linenumber: <?php echo get_option('argon_code_highlight_transparent_linenumber', 'false'); ?>,
 				break_line: <?php echo get_option('argon_code_highlight_break_line', 'false'); ?>
 			}
 		}
@@ -250,32 +256,15 @@
 		$themecolor_rgbstr = hex2str($themecolor);
 		$RGB = hexstr2rgb($themecolor);
 		$HSL = rgb2hsl($RGB['R'], $RGB['G'], $RGB['B']);
-
-		$RGB_dark0 = hsl2rgb($HSL['h'], $HSL['s'], max($HSL['l'] - 0.025, 0));
-		$themecolor_dark0 = rgb2hex($RGB_dark0['R'],$RGB_dark0['G'],$RGB_dark0['B']);
-
-		$RGB_dark = hsl2rgb($HSL['h'], $HSL['s'], max($HSL['l'] - 0.05, 0));
-		$themecolor_dark = rgb2hex($RGB_dark['R'], $RGB_dark['G'], $RGB_dark['B']);
-
-		$RGB_dark2 = hsl2rgb($HSL['h'], $HSL['s'], max($HSL['l'] - 0.1, 0));
-		$themecolor_dark2 = rgb2hex($RGB_dark2['R'],$RGB_dark2['G'],$RGB_dark2['B']);
-
-		$RGB_dark3 = hsl2rgb($HSL['h'], $HSL['s'], max($HSL['l'] - 0.15, 0));
-		$themecolor_dark3 = rgb2hex($RGB_dark3['R'],$RGB_dark3['G'],$RGB_dark3['B']);
-
-		$RGB_light = hsl2rgb($HSL['h'], $HSL['s'], min($HSL['l'] + 0.1, 1));
-		$themecolor_light = rgb2hex($RGB_light['R'],$RGB_light['G'],$RGB_light['B']);
 	?>
 	:root{
 		--themecolor: <?php echo $themecolor; ?>;
-		--themecolor-dark0: <?php echo $themecolor_dark0; ?>;
-		--themecolor-dark: <?php echo $themecolor_dark; ?>;
-		--themecolor-dark2: <?php echo $themecolor_dark2; ?>;
-		--themecolor-dark3: <?php echo $themecolor_dark3; ?>;
-		--themecolor-light: <?php echo $themecolor_light; ?>;
-		--themecolor-rgbstr: <?php echo $themecolor_rgbstr; ?>;
-		--themecolor-gradient: linear-gradient(150deg,var(--themecolor-light) 15%, var(--themecolor) 70%, var(--themecolor-dark0) 94%);
-
+		--themecolor-R: <?php echo $RGB['R']; ?>;
+		--themecolor-G: <?php echo $RGB['G']; ?>;
+		--themecolor-B: <?php echo $RGB['B']; ?>;
+		--themecolor-H: <?php echo $HSL['H']; ?>;
+		--themecolor-S: <?php echo $HSL['S']; ?>;
+		--themecolor-L: <?php echo $HSL['L']; ?>;
 	}
 </style>
 <style id="theme_cardradius_css">
@@ -432,7 +421,7 @@
 	?>
 	<div id="banner_container" class="banner-container container text-center">
 		<?php if ($enable_banner_title_typing_effect != "true"){?>
-			<div class="banner-title text-white"><span class="banner-title-inner"><?php echo $banner_title; ?></span>
+			<div class="banner-title text-white"><span class="banner-title-inner"><?php echo apply_filters('argon_banner_title_html', $banner_title); ?></span>
 			<?php echo get_option('argon_banner_subtitle') == '' ? '' : '<span class="banner-subtitle d-block">' . get_option('argon_banner_subtitle') . '</span>'; ?></div>
 		<?php } else {?>
 			<div class="banner-title text-white" data-interval="<?php echo get_option('argon_banner_typing_effect_interval', 100); ?>"><span data-text="<?php echo $banner_title; ?>" class="banner-title-inner">&nbsp;</span>
@@ -445,6 +434,11 @@
 				background-image: url(<?php echo get_banner_background_url(); ?>) !important;
 			}
 		</style>
+	<?php } ?>
+	<?php if ($banner_size == 'fullscreen') { ?>
+		<div class="cover-scroll-down">
+			<i class="fa fa-angle-down" aria-hidden="true"></i>
+		</div>
 	<?php } ?>
 </section>
 

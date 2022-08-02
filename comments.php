@@ -13,6 +13,14 @@
 			</h2>
 			<ol class="comment-list">
 				<?php
+					get_option("argon_comment_pagination_type", "feed") == "feed" ? 
+					wp_list_comments(
+						array(
+							'type'      => 'comment',
+							'callback'  => 'argon_comment_format'
+						),
+						argon_get_comments()
+					) :	
 					wp_list_comments(
 						array(
 							'type'      => 'comment',
@@ -125,22 +133,41 @@
 							<div class="input-group-prepend">
 								<span class="input-group-text"><i class="fa fa-envelope"></i></span>
 							</div>
-							<input id="post_comment_email" class="form-control" placeholder="<?php _e('邮箱', 'argon');?><?php if ($enable_qq_avatar == 'true'){echo " / QQ 号";} ?>" type="email" name="email" value="<?php if (is_user_logged_in()) {echo (wp_get_current_user() -> user_email);} else {echo htmlspecialchars($current_commenter['comment_author_email']);} ?>">
+							<input id="post_comment_email" class="form-control" placeholder="<?php _e('邮箱', 'argon');?><?php if ($enable_qq_avatar == 'true'){echo __(' / QQ 号', 'argon');} ?>" type="email" name="email" value="<?php if (is_user_logged_in()) {echo (wp_get_current_user() -> user_email);} else {echo htmlspecialchars($current_commenter['comment_author_email']);} ?>">
 						</div>
 					</div>
 				</div>
 				<div class="<?php echo $col3_class;?>">
 					<div class="form-group">
-						<div class="input-group input-group-alternative mb-4 post-comment-captcha-container">
+						<div class="input-group input-group-alternative mb-4 post-comment-captcha-container" captcha="<?php echo get_comment_captcha(get_comment_captcha_seed());?>">
 							<div class="input-group-prepend">
 								<span class="input-group-text"><i class="fa fa-key"></i></span>
 							</div>
 							<input id="post_comment_captcha" class="form-control" placeholder="<?php _e('验证码', 'argon');?>" type="text" <?php if (current_user_can('level_7')) {echo('value="' . get_comment_captcha_answer(get_comment_captcha_seed()) . '" disabled');}?>>
 							<style>
 								.post-comment-captcha-container:before{
-									content: "<?php echo get_comment_captcha(get_comment_captcha_seed());?>";
+									content: attr(captcha);
 								}
 							</style>
+							<?php if (get_option('argon_get_captcha_by_ajax', 'false') == 'true') {?>
+								<script>
+									$(".post-comment-captcha-container").attr("captcha", "Loading...");
+									$.ajax({
+										url : argonConfig.wp_path + "wp-admin/admin-ajax.php",
+										type : "POST",
+										dataType : "json",
+										data : {
+											action: "get_captcha",
+										},
+										success : function(result){
+											$(".post-comment-captcha-container").attr("captcha", result['captcha']);
+										},
+										error : function(xhr){
+											$(".post-comment-captcha-container").attr("captcha", "<?php _e('获取验证码失败', 'argon');?>");
+										}
+									});
+								</script>
+							<?php } ?>
 						</div>
 					</div>
 				</div>
@@ -219,9 +246,21 @@
 		</div>
 	</div>
 </div>
-<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content"></div>
+<div id="comment_pin_comfirm_dialog" class="modal fade" tabindex="-1" role="dialog" aria-modal="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" style="font-size: 20px;"></h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">×</span>
+				</button>
+			</div>
+			<div class="modal-body" style="word-break: break-word;"></div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary btn-dismiss" data-dismiss="modal"></button>
+				<button type="button" class="btn btn-primary btn-comfirm"></button>
+			</div>
+		</div>
 	</div>
 </div>
 <?php } ?>

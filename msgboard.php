@@ -29,20 +29,20 @@ Template Name: 留言板 (请打开页面的评论功能)
 		endwhile;
 		?>
 <style>
-article {
+#main article {
 	display: none !important;
 }
 #share_container {
 	display: none;
 }
-.comments-title {
+.comments-area .comments-title {
 	font-size: 0px;
 }
-.comments-title:after {
-	content: '<?php _e("留言板"); ?>';
+.comments-area .comments-title:after {
+	content: '<?php _e("留言板", "argon"); ?>';
 	font-size: 20px;
 }
-.comments-title i {
+.comments-area .comments-title i {
 	font-size: 20px;
 	margin-right: 10px;
 }
@@ -50,7 +50,7 @@ article {
 	font-size: 0px;
 }
 .post-comment-title:after {
-	content: '<?php _e("发送留言"); ?>';
+	content: '<?php _e("发送留言", "argon"); ?>';
 	font-size: 20px;
 }
 .post-comment-title i {

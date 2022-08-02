@@ -11,6 +11,11 @@ Hexo 版本 : [github.com/solstice23/hexo-theme-argon](https://github.com/solsti
 
 [![GitHub last commit](https://img.shields.io/github/last-commit/solstice23/argon-theme?style=flat-square)](https://github.com/solstice23/argon-theme/commits/master) [![GitHub Release Date](https://img.shields.io/github/release-date/solstice23/argon-theme?style=flat-square)](https://github.com/solstice23/argon-theme/releases) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/solstice23/argon-theme?style=flat-square)
 
+# 状态
+
+> 重构初步完成，1.x 版本将冻结开发，PR 请提交到 [dev](https://github.com/solstice23/argon-theme/tree/dev) 分支。后续将逐渐重构前端代码。
+
+
 # 特性
 
 + **轻盈美观** - 使用 Argon Design System 前端框架，细节精致，轻盈美观
@@ -35,13 +40,14 @@ Hexo 版本 : [github.com/solstice23/hexo-theme-argon](https://github.com/solsti
 
 [Argon-Theme 文档 : https://argon-docs.solstice23.top](https://argon-docs.solstice23.top/)
 
-# Demo
-
-主题效果预览
+# Demo / 用户墙
 
 [solstice23.top](https://solstice23.top)
 
 [argon-demo.solstice23.top](http://argon-demo.solstice23.top)
+
+前往 [Argon 用户墙](https://argon-showcase.solstice23.top/) 查看更多博客的主题效果。
+
 
 # 注意
 
@@ -69,6 +75,102 @@ Argon 使用 [GPL V3.0](https://github.com/solstice23/argon-theme/blob/master/LI
 自动推送更新消息以及其他关于 Argon 的消息
 
 # 更新日志
+
+## 20220319 v1.3.5
++ 支持自定义 CDN 域名
++ 支持读取 Post Views Counter 插件的阅读量数据
++ 修复未审核评论被显示的问题
++ 修复评论分页问题
++ 其他改进与修复
+
+## 20220214 v1.3.4
++ 支持自定义搜索过滤器顺序和默认选中状态
++ 支持添加自定义文章类型的搜索过滤器
++ 修复代码块样式问题
++ 其他改进与修复
+
+## 20220211 v1.3.3
++ 🌈 新增 后台管理界面美化 (在"用户-个人资料-管理界面配色方案" 或 "Argon设置-杂项" 中开启)
++ 新增 CF Worker 更新源，移除 jsdelivr 更新源
++ 支持短代码嵌套
++ 修复多站点下无法编辑主题设置的问题
++ 其他改进与修复
+
+## 20220207 v1.3.2
++ 使评论区第一页填满评论（评论分页方式为无限加载时）
++ 新增 `argon_html_before_wordcount` Filter
++ 修复代码块溢出边界的问题
++ 优化代码块控制栏可见性
++ 修复评论排序问题
++ 其他改进与修复
+
+## 20220205 v1.3.1
++ 📌 新增 评论置顶 功能（需要在选项中开启）
++ 子评论支持显示被回复者昵称
++ 同步 Highlight.js 高亮方案
++ 其他改进与修复
+
+## 20220203 v1.3.0
++ 🎨 新增 气氛色 选项：主题色全局沉浸（类似 Material You）
++ 新增 `argon_comment_extra_info` filter
++ 代码块行号默认不透明
++ 修复首页排除文章和 Tag 选项不生效的 Bug
++ 修复友情链接页面显示错误
++ 修复评论区表单验证问题
++ 修复 session 干扰 REST API 回环问题
++ 修复开启衬线字体后代码块显示问题
++ 修复后台媒体库不能搜索问题
++ 其他改进与修复
+
+## 20220106 v1.2.10
++ 新增通过 Ajax 获取验证码以绕过 CDN 缓存选项
++ 说说预览显示赞数和评论数，优化折叠样式
++ 修复编辑器某些功能的失效
++ 修复评论提醒邮件格式错误
++ 修复 Pangu.js 某些页面不应用
++ 修复搜索结果切换筛选器后页数不重置
++ 修复搜索结果说说预览图片不显示问题
++ 修复 Pjax 右侧栏不刷新的问题
++ 繁体中文翻译修正
++ UI 细节修复与调整
++ 其他修复与改进
+
+## 20211205 v1.2.9
++ 增加搜索过滤器（支持搜索说说）
++ 支持折叠过长说说
++ 修改单篇文章过时信息显示时不覆盖最后编辑时间
++ 其他修复与改进
+
+## 20211121 v1.2.8
++ 完善文章字数统计，新增代码行数统计和时间计算
++ 修复字数统计问题
++ 新增 "站点概览额外内容" 工具栏
++ 加密文章输入密码前不获取第一张图片作为头图
++ 修复单栏下顶栏不自动折叠的问题
++ 修复 UI 瑕疵
++ 其他修复与改进
+
+## 20211024 v1.2.7
++ 适配侧栏 Wordpress 归档日历
++ 站点概览增加作者个人介绍选项
++ 增加 AHCDN ([#284](https://github.com/solstice23/argon-theme/issues/284))
++ 增加 2 个 Filter (404 页面额外 HTML、Banner 标题 HTML)
++ 归档时间轴页面增加对应年月链接
++ 其他修复与改进
+
+## 20211001 v1.2.6
++ 优化归档时间轴页面，支持按月分节，支持左侧栏跳转和目录
++ 适配区块左侧栏，文字头像支持全局
++ 优化全屏封面时浮动操作栏、Pjax 等体验
++ Url Hash 指向的评论突出显示
++ 优化滚动动画曲线
++ 修复 Session 初始化问题
++ 其他微调和修复
+
+## 20210905 v1.2.5
++ 滚动条沉浸
++ Banner 显示状态新增全屏选项（Banner 可全屏作为封面）
++ 更正翻译
 
 ## 20210815 v1.2.4
 + 新增 Banner 显示状态选项（新增隐藏 Banner、迷你 Banner）
